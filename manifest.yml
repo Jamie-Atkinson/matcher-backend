@@ -1,0 +1,5 @@
+---
+applications:
+- name: registerchecker
+  memory: 64M
+  buildpack: python_buildpack

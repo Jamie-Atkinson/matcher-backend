@@ -1,4 +1,3 @@
-# coding: utf-8
 """
 Simple flask app
 """
@@ -11,14 +10,8 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# Set the location where uploaded files will be stored (/tmp/ is probably ok)
-# Note that at present these will remain on the server until it is rebooted.
-
-# Set the app secret key to prevent CSRF
 
 app.secret_key = os.urandom(24)
-
-# Demonstrate access to an attached database using sqlalchemy and pandas
 
 @app.route('/', methods=['GET'])
 def return_json_from_db():
@@ -30,7 +23,15 @@ def return_json_from_db():
     print('String created')
     engine = create_engine(db_string)
     print(engine)
-    return 'Hello World'
+    
+    
+    query = 'SELECT * FROM "local-authority-eng" WHERE SOUNDEX(name) = SOUNDEX("{strings}")'
+    # Run simple query on database
+
+    data = pd.read_sql(query, engine)
+    # Convert to a json
+    # Return the json and a 200 (ok) response
+    return str(data)
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)

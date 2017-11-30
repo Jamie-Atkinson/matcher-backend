@@ -25,7 +25,7 @@ def return_json_from_db():
     print(engine)
     
     
-    query = 'SELECT * FROM "local-authority-eng" LIMIT 10'
+    query = """SELECT * FROM "local-authority-eng"     where soundex(name) = soundex('hampshir')"""
     # Run simple query on database
 
     data = pd.read_sql(query, engine)

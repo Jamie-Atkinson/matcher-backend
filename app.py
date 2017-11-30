@@ -13,25 +13,37 @@ app = Flask(__name__)
 
 app.secret_key = os.urandom(24)
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['POST'])
 def return_json_from_db():
-    """
-    Access the test table on postgres and return
-    """
+
+
+    values = request.get_json()
+    print(str(values))
+    strings = values.get('strings')
+    if strings is None:
+        return "Error: Please supply a valid string", 400
+        print('{strings}')
+
 
     db_string = os.getenv('DATABASE_URL')
-    print('String created')
+
     engine = create_engine(db_string)
-    print(engine)
+
     
     
-    query = """SELECT * FROM "local-authority-eng"     where soundex(name) = soundex('hampshir')"""
+    query = """SELECT * FROM "local-authority-eng"     where soundex(name) = soundex('strings')"""
     # Run simple query on database
 
     data = pd.read_sql(query, engine)
-    # Convert to a json
+
+    response = data.to_json()
+
     # Return the json and a 200 (ok) response
-    return str(data)
+
+    return response, 200
+
+
+#    return str(data)
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)

@@ -1,5 +1,5 @@
 ---
 applications:
 - name: registerchecker
-  memory: 64M
+  memory: 256M
   buildpack: python_buildpack

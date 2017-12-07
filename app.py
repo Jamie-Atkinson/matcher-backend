@@ -26,16 +26,15 @@ def return_json_from_db():
 
 
     db_string = os.getenv('DATABASE_URL')
-
+    print('{strings}')
     engine = create_engine(db_string)
-
+    print('{strings}')
     
+    query = 'SELECT * FROM "local-authority-eng" where soundex(name) = soundex({})'.format("'" + strings + "'")
     
-    query = """SELECT * FROM "local-authority-eng"     where soundex(name) = soundex('strings')"""
-    # Run simple query on database
-
     data = pd.read_sql(query, engine)
-
+    #data = pd.read_sql(query, engine,params={"strings":strings})
+    print('{strings}')
     response = data.to_json()
 
     # Return the json and a 200 (ok) response
@@ -44,6 +43,6 @@ def return_json_from_db():
 
 
 #    return str(data)
-
+3
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)

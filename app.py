@@ -20,9 +20,17 @@ def return_json_from_db():
     values = request.get_json()
     print(str(values))
     strings = values.get('strings')
+    register = values.get('register')
+    field = values.get('field')
+    if register is None:
+        return "Error: Please supply a valid register name", 400
+        print('{register}')
     if strings is None:
         return "Error: Please supply a valid string", 400
         print('{strings}')
+    if field is None:
+        return "Error: Please supply a valid field", 400
+        print('{field}')
 
 
     db_string = os.getenv('DATABASE_URL')
@@ -30,7 +38,23 @@ def return_json_from_db():
     engine = create_engine(db_string)
     print('{strings}')
     
-    query = 'SELECT * FROM "local-authority-eng" where soundex(name) = soundex({})'.format("'" + strings + "'")
+    
+    """
+    
+    dont excecute as strings
+    
+    connect it to database and select
+    
+    """
+    
+    #lookup = {
+    #'local-authorities':['local-authority-eng', 'local-authority-sct'],
+    #'gov-orgs':['government-organisation']
+    #}
+    
+
+    query = 'SELECT * FROM "{}" where soundex({}) = soundex({})'.format( register,'"' + field + '"',"'" + strings + "'")
+    
     
     data = pd.read_sql(query, engine)
     #data = pd.read_sql(query, engine,params={"strings":strings})

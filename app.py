@@ -6,6 +6,10 @@ from flask import (Flask, request, redirect, url_for, send_from_directory,
                    flash, render_template)
 import pandas as pd
 from sqlalchemy import create_engine
+from sqlalchemy import select
+from sqlalchemy import create_engine
+from sqlalchemy import MetaData
+from sqlalchemy import Table
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -37,7 +41,8 @@ def return_json_from_db():
     print('{strings}')
     engine = create_engine(db_string)
     print('{strings}')
-    
+    conn = engine.connect()
+    print('{strings}')
     
     """
     
@@ -47,19 +52,24 @@ def return_json_from_db():
     
     """
     
-    #lookup = {
-    #'local-authorities':['local-authority-eng', 'local-authority-sct'],
-    #'gov-orgs':['government-organisation']
-    #}
+    #query = 'SELECT * FROM "{}" where soundex({}) = soundex({})'.format( register,'"' + field + '"',"'" + strings + "'")
+    #data = pd.read_sql(query, engine)
     
+    metadata = MetaData()
+    print (metadata.tables)
+    metadata.reflect(bind=engine)
+    print (metadata.tables)
+    localauthorityeng = metadata.tables['local-authority-eng']
+    print ([localauthorityeng])
 
-    query = 'SELECT * FROM "{}" where soundex({}) = soundex({})'.format( register,'"' + field + '"',"'" + strings + "'")
+
+
+    #localauthorityeng = Table('local-authority-eng', meta, autoload=True, autoload_with=engine)
+    s = select([localauthorityeng])
+    data = conn.excecute(s)
     
-    
-    data = pd.read_sql(query, engine)
-    #data = pd.read_sql(query, engine,params={"strings":strings})
-    print('{strings}')
-    response = data.to_json()
+    #print('{strings}')
+    #response = data.to_json()
 
     # Return the json and a 200 (ok) response
 
